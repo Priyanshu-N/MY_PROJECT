@@ -1,0 +1,27 @@
+{
+  "name": "mern_project",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon api/index.js",
+    "start": "node api/index.js"
+    
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Priyanshu-N/mern_project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Priyanshu-N/mern_project/issues"
+  },
+  "homepage": "https://github.com/Priyanshu-N/mern_project#readme",
+  "description": "",
+  "dependencies": {
+    "express": "^5.1.0",
+    "nodemon": "^3.1.10"
+  }
+}
