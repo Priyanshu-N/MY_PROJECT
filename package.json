@@ -6,7 +6,6 @@
   "scripts": {
     "dev": "nodemon api/index.js",
     "start": "node api/index.js"
-    
   },
   "repository": {
     "type": "git",
@@ -21,7 +20,10 @@
   "homepage": "https://github.com/Priyanshu-N/mern_project#readme",
   "description": "",
   "dependencies": {
+    "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "mongodb": "^6.17.0",
+    "mongoose": "^8.16.0",
     "nodemon": "^3.1.10"
   }
 }
