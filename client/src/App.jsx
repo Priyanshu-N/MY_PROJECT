@@ -9,10 +9,9 @@ import Signin from './pages/Signin'
 import Signup from './pages/Signup'
 import Profile from './pages/Profile'
 import Header from './components/Header'
-// import Header from './components/Header'
+
 
 function App() {
-  // const [count, setCount] = useState(0)
 
   return <BrowserRouter>
   <Header />
