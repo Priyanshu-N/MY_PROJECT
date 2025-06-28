@@ -1,14 +1,27 @@
 import React from 'react'
 import { useSelector } from "react-redux"
-import { useRef, useState} from 'react'
+import { useRef, useState, useEffect} from 'react'
 import axios from 'axios'
+import { useDispatch } from 'react-redux'
+import {updateUserSuccess} from '../redux/user/userSlice'
 
 
 export default function Profile() {
   const fileRef = useRef(null)
+  const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user)
   const [selectFile, setselectFile] = useState(null);
-  const [previewUrl, setPreviewUrl]=useState(currentUser.avatar)
+  const [previewUrl, setPreviewUrl]=useState('');
+
+  // console.log('cr',currentUser);
+  useEffect(() => {
+    if (currentUser?.avatar) {
+      const fullUrl = currentUser.avatar.startsWith('http')
+        ? currentUser.avatar
+        : `http://localhost:3000${currentUser.avatar}`;
+      setPreviewUrl(fullUrl);
+    }
+  }, [currentUser]);
 
   const handleFileChange = async (e) => {
   const file = e.target.files[0];
@@ -22,20 +35,23 @@ export default function Profile() {
   formData.append('userId', currentUser._id); // make sure this is correct
 
   try {
-    const res = await axios.post('http://localhost:3000/api/user/upload-avatar', formData);
+      const res = await axios.post(
+        'http://localhost:3000/api/user/upload-avatar',
+        formData
+      );
 
-    // Safe check for structure
-    if (res.data && res.data.user && res.data.user.avatar) {
-      setPreviewUrl(`http://localhost:3000${res.data.user.avatar}`);
-      console.log('✅ Image uploaded:', res.data);
-    } else {
-      console.error('❌ Invalid server response:', res.data);
+      if (res.data && res.data.user && res.data.user.avatar) {
+        const newAvatarUrl = `http://localhost:3000${res.data.user.avatar}`;
+        setPreviewUrl(newAvatarUrl);
+        dispatch(updateUserSuccess(res.data.user)); // ✅ update Redux store
+        console.log('✅ Image uploaded:', res.data);
+      } else {
+        console.error('❌ Invalid server response:', res.data);
+      }
+    } catch (error) {
+      console.error('❌ Error uploading avatar:', error);
     }
-
-  } catch (error) {
-    console.error('❌ Error uploading avatar:', error);
-  }
-};
+  };
 
   return (
     <div className='p-3 max-w-lg mx-auto gap-4'>
@@ -44,7 +60,7 @@ export default function Profile() {
         <input type="file" ref={fileRef} hidden accept='image/*' onChange={handleFileChange}/>
         <img
           onClick={()=>fileRef.current.click()}
-          src={previewUrl}
+          src={previewUrl || 'https://via.placeholder.com/100'}
           alt="profile"
           className='rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-2'
         />

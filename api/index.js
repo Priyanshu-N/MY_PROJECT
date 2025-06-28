@@ -9,6 +9,7 @@ import { fileURLToPath } from 'url';
 import userRouter from './routes/user.route.js'; 
 import authRouter from './routes/auth.route.js';
 import User from './models/user.model.js'; // 👈 Add this to update avatar
+import cookieParser from 'cookie-parser'
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ mongoose.connect(process.env.MONGO).then(() => {
 });
 
 const app = express();
+app.use(cookieParser())
 
 app.use(cors()); // ✅ Allow frontend requests
 app.use(express.json()); // ✅ Parse JSON

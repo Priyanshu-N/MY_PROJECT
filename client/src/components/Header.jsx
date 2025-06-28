@@ -4,6 +4,12 @@ import {useSelector} from 'react-redux';
 
 export default function Header() {
   const {currentUser} = useSelector((state) => state.user);
+
+   const avatarUrl = currentUser?.avatar
+    ? currentUser.avatar.startsWith('http')
+      ? currentUser.avatar
+      : `http://localhost:3000${currentUser.avatar}`
+    : null;
   return (
     <header className='bg-slate-200 shadsow-md'>
         <div className='flex justify-between items-center max-w-6xl mx-auto p-3'>
@@ -28,8 +34,10 @@ export default function Header() {
 
               <Link to='/Profile'>
                 {currentUser ? (
-                  <img className='rounded-full h-7 w-7 object-cover' 
-                  src={currentUser.avatar} alt='profile'/>
+                  avatarUrl ? (
+                    <img className='rounded-full h-7 w-7 object-cover' 
+                      src={avatarUrl} alt='profile'/>
+                  ) : null
                 ) : (
                   <li className='text-slate-700 hover:underline'>Sign in</li>
                 )}

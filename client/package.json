@@ -13,6 +13,7 @@
     "@reduxjs/toolkit": "^2.8.2",
     "@tailwindcss/vite": "^4.1.10",
     "axios": "^1.10.0",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "firebase": "^11.9.1",
     "multer": "^2.0.1",
