@@ -10,6 +10,8 @@ import authRouter from './routes/auth.route.js';
 import User from './models/user.model.js'; // 👈 Add this to update avatar
 import cookieParser from 'cookie-parser'
 import listingRouter from './routes/listing.route.js'
+import listingUploadRoute from './routes/listingUpload.route.js'
+
 
 dotenv.config();
 
@@ -73,6 +75,7 @@ app.post('/api/user/upload-avatar', upload.single('avatar'), async (req, res) =>
 app.use('/api/user', userRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/listing', listingRouter);
+app.use('/api/listing', listingUploadRoute)
 
 // ✅ Global error handler
 app.use((err, req, res, next) => {
