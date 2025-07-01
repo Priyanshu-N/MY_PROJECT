@@ -168,7 +168,12 @@ export default function Profile() {
         disabled:opacity-80'>
           {loading ? 'Loading...' : 'Update'}
         </button>
-        <Link className='bg-green-700 text-white p-3 rounded-lg uppercase text-center hover:opacity-95' to={"/create-listing"}>CREATE LISTING</Link>
+        <Link className='bg-green-700 text-white p-3 rounded-lg uppercase text-center hover:opacity-95' to={"/create-listing"}>
+        CREATE LISTING</Link>
+
+        <Link className='bg-slate-100 text-green-700 p-3 rounded-lg uppercase text-center hover:opacity-95'
+        to={`/listing/user/${currentUser._id}`}>
+        Show Listings</Link>
       </form>
       <div className='flex justify-between mt-5'>
         <span onClick={handleDeleteUser} className='text-red-700 cursor-pointer'>Delete accoount</span>
