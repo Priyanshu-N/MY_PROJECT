@@ -123,9 +123,11 @@ export default function CreateListing() {
 
       const data = await res.json();
       console.log('✅ Response from backend:', data);
+      
 
       if(!data || !data._id){
         setError('listing creation failed: missing listing id')
+        setLoading(false)
         return;
       }
 
