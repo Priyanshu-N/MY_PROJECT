@@ -26,6 +26,7 @@ export default function CreateListing() {
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  console.log(formData)
   const handleImageSubmit = async () => {
     if (files.length < 1 || files.length > 6) {
       return setError('Please upload 1–6 images.');
@@ -71,18 +72,32 @@ export default function CreateListing() {
   };
 
   const handleChange = (e) => {
-    const { id, value, type, checked } = e.target;
-    if (id === 'sale' || id === 'rent') {
-      setFormData((prev) => ({ ...prev, type: id }));
-    } else if (['parking', 'furnished', 'offer'].includes(id)) {
-      setFormData((prev) => ({ ...prev, [id]: checked }));
-    } else {
-      setFormData((prev) => ({ ...prev, [id]: value }));
+    if(e.target.id === 'sale' || e.target.id === 'rent'){
+      setFormData({
+        ...formData,
+        type: e.target.id,
+      });
     }
+
+    if(e.target.id === 'parking' || e.target.id === 'furnished' || e.target.id === 'offer'){
+      setFormData({
+        ...formData,
+        [e.target.id]: e.target.checked,
+      })
+    }
+    if(e.target.type === 'number' || e.target.type ==='text' || e.target.type === 'textarea'){
+      setFormData({
+        ...formData,
+        [e.target.id]: e.target.value,
+      })
+
+    }
+
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('✅ Form submitted')
 
     if (formData.imageUrls.length < 1) {
       return setError('You must upload at least one image');
@@ -100,11 +115,14 @@ export default function CreateListing() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ ...formData, 
-        userRef: currentUser._id }),
+        body: JSON.stringify({ 
+        ...formData, 
+        userRef: currentUser._id,
+        }),
       });
 
       const data = await res.json();
+      console.log('✅ Response from backend:', data);
 
       if(!data || !data._id){
         setError('listing creation failed: missing listing id')
