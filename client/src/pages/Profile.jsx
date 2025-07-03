@@ -19,6 +19,7 @@ export default function Profile() {
   const [previewUrl, setPreviewUrl]=useState('');
   const [formData, setFormData] = useState({})
   const [updateSuccess, setUpdateSuccess] = useState(false)
+  const [showListingsError, setShowListingsError] = useState(false);
 
   // console.log('cr',currentUser);
   useEffect(() => {
@@ -126,6 +127,22 @@ export default function Profile() {
     }
   }
 
+  const handleShowListings = async ()=>{
+    try{
+      setShowListingsError(false);
+      const res = await fetch(`/api/user/listing/${currentUser._id}`)
+      const data = await res.json();
+      if(data.success=== false){
+        setShowListingsError(true);
+        return;
+      }
+
+    }catch(error){
+      setShowListingsError(true);
+
+    }
+  }
+
 
   return (
     <div className='p-3 max-w-lg mx-auto gap-4'>
@@ -171,9 +188,7 @@ export default function Profile() {
         <Link className='bg-green-700 text-white p-3 rounded-lg uppercase text-center hover:opacity-95' to={"/create-listing"}>
         CREATE LISTING</Link>
 
-        <Link className='bg-slate-100 text-green-700 p-3 rounded-lg uppercase text-center hover:opacity-95'
-        to={`/listing/user/${currentUser._id}`}>
-        Show Listings</Link>
+       
       </form>
       <div className='flex justify-between mt-5'>
         <span onClick={handleDeleteUser} className='text-red-700 cursor-pointer'>Delete accoount</span>
@@ -181,6 +196,8 @@ export default function Profile() {
       </div>
       <p className='text-red-500'>{error ? error: ''}</p>
       <p className='text-green-500'>{updateSuccess ? 'User is updated successfully': ''}</p>
+      <button onClick={handleShowListings} className='text-green-700 w-full'>Show Listings</button>
+      <p className='text-red-700 mt-5'>{showListingsError ? 'error showing listings': ''}</p>
     </div>
   )
 }

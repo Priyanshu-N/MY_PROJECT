@@ -25,11 +25,12 @@ export default function Signin() {
     e.preventDefault(); //so the page doesn't refresh
     try{
         dispatch(signInStart())      
-        const res = await fetch('api/auth/signin',{
+        const res = await fetch('http://localhost:3000/api/auth/signin',{
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify(formData)
       });
       const data = await res.json();
@@ -61,7 +62,7 @@ export default function Signin() {
       </form>
       <div className='flex gap-2 mt-5'>
         <p>Don`t have an account?</p>
-        <Link to={"/sign-up"}>
+        <Link to={"/signup"}>
           <span className='text-blue-500'>Sign up</span>
         </Link>
       </div>
