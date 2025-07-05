@@ -1,4 +1,5 @@
 import Listing from "../models/listing.model.js";
+import express from 'express'
 
 // ✅ Already exists
 export const createListing = async (req, res, next) => {

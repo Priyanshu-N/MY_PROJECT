@@ -20,6 +20,7 @@ export default function Profile() {
   const [formData, setFormData] = useState({})
   const [updateSuccess, setUpdateSuccess] = useState(false)
   const [showListingsError, setShowListingsError] = useState(false);
+  const [userListings, setUserListings] = useState([])
 
   // console.log('cr',currentUser);
   useEffect(() => {
@@ -117,7 +118,7 @@ export default function Profile() {
     try{
       const res = await fetch('/api/auth/signout')
       const data = await res.json()
-      if(data.sussess === false){
+      if(data.success === false){
         dispatch(deleteUserFailure(data.message))
       }
       dispatch(deleteUserSuccess(data))
@@ -130,12 +131,13 @@ export default function Profile() {
   const handleShowListings = async ()=>{
     try{
       setShowListingsError(false);
-      const res = await fetch(`/api/listing/${currentUser._id}`)
+      const res = await fetch(`/api/user/listings/${currentUser._id}`)
       const data = await res.json();
       if(data.success=== false){
         setShowListingsError(true);
         return;
       }
+      setUserListings(data);
 
     }catch(error){
       setShowListingsError(true);
@@ -198,6 +200,40 @@ export default function Profile() {
       <p className='text-green-500'>{updateSuccess ? 'User is updated successfully': ''}</p>
       <button onClick={handleShowListings} className='text-green-700 w-full'>Show Listings</button>
       <p className='text-red-700 mt-5'>{showListingsError ? 'error showing listings': ''}</p>
+
+
+      {userListings && userListings.length > 0 && (
+        <div className='flex flex-col gap-4'>
+          <h1 className='text-center text-green-700 font-semibold mt-7 text-3xl'>Your Listings</h1>
+          {userListings.map((listing) => {
+            console.log('Image URL:', listing.imageUrls[0]); // ✅ Add this line
+
+            return (
+              <div key={listing._id} className=' border rounded-lg p-3 flex justify-between items-center gap-4'>
+                <Link to={`/listing/${listing._id}`}>
+                  <img
+                    src={`http://localhost:3000${listing.imageUrls[0].replace(/\\/g, '/')}`}
+                    alt="listing cover"
+                    className="h-16 w-16 object-contain "
+                    onError={(e) => {
+                        e.target.parentElement.parentElement.remove(); // 👈 remove the full listing div
+                        console.warn("Removed broken image:", listing.imageUrls[0]);
+                    }}
+                  />
+                </Link>
+                <Link to={`/listing/${listing._id}`} className='text-slate-700 font-semibold truncate flex-1 hover:underline' >
+                    <p>{listing.name}</p>
+                </Link>
+                <div className='flex flex-col item-center'>
+                  <button className='text-red-700 uppercase'>Delete</button>
+                  <button className='text-green-700 uppercase'>edit</button>
+                </div>
+
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   )
 }
