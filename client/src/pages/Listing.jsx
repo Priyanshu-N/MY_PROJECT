@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { FaMapMarkerAlt, FaBed, FaBath, FaParking, FaCouch } from 'react-icons/fa';
+import { useSelector } from 'react-redux';
+import Contact from '../components/Contact';
 
 export default function Listing() {
+  const { currentUser } = useSelector((state) => state.user);
   const { listingId } = useParams();
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [contact, setContact] = useState(false);
 
   useEffect(() => {
     const fetchListing = async () => {
@@ -30,22 +34,23 @@ export default function Listing() {
   if (error) return <p className="text-center text-red-500">{error}</p>;
 
   return (
-    <main>
+    <main className="bg-white min-h-screen">
       {/* Cover Image */}
       {listing.imageUrls?.[0] && (
-        <div className="w-full max-h-[500px] overflow-hidden">
+        <div className=" w-full overflow-hidden">
           <img
-            src={listing.imageUrls[0]}
+            src={`http://localhost:3000${listing.imageUrls[0]}`} // Update if needed
             alt="cover"
-            className="w-full object-cover h-[500px]"
+            className="w-full h object-cover"
           />
         </div>
       )}
 
       <div className="max-w-6xl mx-auto p-4">
-        {/* Name + Price */}
+        {/* Title + Price */}
         <h1 className="text-3xl font-bold mt-6">
-          {listing.name} - <span className="text-green-600">${listing.regularPrice}/month</span>
+          {listing.name} -{' '}
+          <span className="text-green-600">${listing.regularPrice} / month</span>
         </h1>
 
         {/* Address */}
@@ -54,14 +59,21 @@ export default function Listing() {
           <p>{listing.address}</p>
         </div>
 
-        {/* Type Button */}
-        <button
-          className={`mt-3 px-4 py-2 rounded font-semibold text-white ${
-            listing.type === 'rent' ? 'bg-red-600' : 'bg-blue-600'
-          }`}
-        >
-          {listing.type === 'rent' ? 'For Rent' : 'For Sale'}
-        </button>
+        {/* For Rent / Sale Tag + Offer Price */}
+        <div className="flex items-center gap-4 mt-4">
+          <span
+            className={`text-white font-medium px-4 py-2 rounded ${
+              listing.type === 'rent' ? 'bg-red-600' : 'bg-blue-600'
+            }`}
+          >
+            {listing.type === 'rent' ? 'For Rent' : 'For Sale'}
+          </span>
+          {listing.offer && (
+            <span className="text-white bg-green-600 px-4 py-2 rounded font-semibold">
+              ${listing.discountPrice}
+            </span>
+          )}
+        </div>
 
         {/* Description */}
         <div className="mt-6">
@@ -69,18 +81,18 @@ export default function Listing() {
           <p className="text-gray-700">{listing.description}</p>
         </div>
 
-        {/* All Images */}
+        {/* Gallery Images */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-6">
           {listing.imageUrls
-            ?.filter((_, index) => index !== 1) // ⛔ Skip second image
+            ?.filter((_, index) => index !== 0) // skip cover image
             .map((url, index) => (
-                <img
+              <img
                 key={index}
-                src={url}
-                alt={`Listing ${index}`}
-                className="w-full h-64 object-cover rounded-lg shadow-md"
-            />
-        ))}
+                src={`http://localhost:3000${url}`} // adjust for local API
+                alt={`Listing image ${index}`}
+                className="w-full h object-cover rounded shadow"
+              />
+            ))}
         </div>
 
         {/* Features */}
@@ -99,12 +111,15 @@ export default function Listing() {
           </span>
         </div>
 
-        {/* Offer Info */}
-        {listing.offer && (
-          <div className="mt-4 text-green-600 font-semibold">
-            🎉 Special Offer: ${listing.discountPrice} / month
+        {/* Contact Landlord */}
+        {currentUser && listing.useRef !== currentUser._id && !contact && (
+          <div className="flex justify-center">
+            <button onClick={() => setContact(true)} className="bg-slate-700 mt-6 text-white rounded uppercase hover:opacity-90 px-6 py-3">
+              Contact Landlord
+            </button>
           </div>
         )}
+        {contact && <Contact listing={listing} />}
       </div>
     </main>
   );
