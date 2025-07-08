@@ -1,9 +1,30 @@
 import { FaSearch } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { Link,useNavigate} from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
 
 export default function Header() {
   const { currentUser } = useSelector((state) => state.user);
+  const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const urlPrams = new URLSearchParams(window.location.search);
+    urlPrams.set('searchTerm', searchTerm);
+    const searchQuery = urlPrams.toString();
+    navigate(`/search?${searchQuery}`);
+
+
+  }
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchTermFromUrl = urlParams.get('searchTerm');
+    if (searchTermFromUrl) {
+      setSearchTerm(searchTermFromUrl);
+      setSearchTerm(searchTermFromUrl);
+    }
+  },[location.search]);
 
   const avatarUrl = currentUser?.avatar
     ? currentUser.avatar.startsWith('http')
@@ -24,13 +45,17 @@ export default function Header() {
         </Link>
 
         {/* Search Bar */}
-        <form className='bg-slate-100 p-2 sm:p-3 rounded-lg flex items-center'>
+        <form onSubmit={handleSubmit} className='bg-slate-100 p-2 sm:p-3 rounded-lg flex items-center'>
           <input
             type='text'
             placeholder='Search...'
             className='bg-transparent focus:outline-none w-24 sm:w-64'
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <FaSearch className='text-slate-600 ml-1' />
+          <button>
+            <FaSearch className='text-slate-600 ml-1' />
+          </button>
         </form>
 
         {/* Links + Profile Icon */}
