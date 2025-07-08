@@ -10,9 +10,9 @@ export default function Header() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const urlPrams = new URLSearchParams(window.location.search);
-    urlPrams.set('searchTerm', searchTerm);
-    const searchQuery = urlPrams.toString();
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set('searchTerm', searchTerm);
+    const searchQuery = urlParams.toString();
     navigate(`/search?${searchQuery}`);
 
 
@@ -22,7 +22,7 @@ export default function Header() {
     const searchTermFromUrl = urlParams.get('searchTerm');
     if (searchTermFromUrl) {
       setSearchTerm(searchTermFromUrl);
-      setSearchTerm(searchTermFromUrl);
+     
     }
   },[location.search]);
 
