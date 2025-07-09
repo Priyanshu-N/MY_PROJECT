@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
+import Listingitem from '../components/Listingitem';
 
 
 export default function () {
@@ -196,9 +197,22 @@ export default function () {
 
         </div>
 
-        <div>
+        <div className='flex-1'>
             <h1 className='text-3xl font-semibold text-slate-700 border-b p-3 mt-5'>Listing Results:</h1>
-           
+            <div className='p-7 flex flex-wrap gap-5'>
+                {!loading && listings.length ===0 && (
+                    <p className=' text-xl text-slate-700'>No listings found</p>
+                )}
+                {loading && (
+                    <p className='text-center text-xl text-slate-700 w-full'>Loading...</p>
+                )}
+
+                {
+                    !loading && listings && listings.map((listing) => (
+                        <Listingitem key={listing._id} listing={listing} />
+                    ))
+                }
+            </div>
         </div>
     </div>
   )

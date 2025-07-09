@@ -37,7 +37,7 @@ export default function Listing() {
     <main className="bg-white min-h-screen">
       {/* Cover Image */}
       {listing.imageUrls?.[0] && (
-        <div className=" w-full overflow-hidden">
+        <div className="  overflow-hidden">
           <img
             src={`http://localhost:3000${listing.imageUrls[0]}`} // Update if needed
             alt="cover"
