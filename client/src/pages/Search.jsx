@@ -7,6 +7,7 @@ import Listingitem from '../components/Listingitem';
 export default function () {
     const navigate = useNavigate();
     const location = useLocation();
+    const [showMore, setShowMore] = useState(false);
 
 
     const [sidebardata, setSidebardata] = useState({
@@ -21,7 +22,7 @@ export default function () {
 
     const [loading, setLoading] = useState(false);
     const [listings, setListings] = useState([]); 
-    console.log(listings)
+    // console.log(listings)
 
 
     useEffect(() => {
@@ -61,6 +62,11 @@ export default function () {
             });
 
             const data = await res.json();
+            if(data.length > 8) {
+                setShowMore(true);
+            }else{
+                setShowMore(false);
+            }
             setListings(data);
             setLoading(false);
         }
@@ -118,6 +124,24 @@ export default function () {
         urlParams.set('order', sidebardata.order)
         const searchQuery = urlParams.toString()
         navigate(`/search?${searchQuery}`) // Assuming you have a navigate function from react-router or similar
+    }
+
+
+    const onShowMoreClick = async () => {
+
+        const numberOfListings = listings.length;
+        const startIndex = numberOfListings;
+        const urlParams = new URLSearchParams(location.search);
+        urlParams.set('startIndex', startIndex);
+        const searchQuery = urlParams.toString();
+        const res = await fetch(`/api/listing/get?${searchQuery}`, {
+            credentials: 'include', 
+        });
+        const data = await res.json();
+        if(data.length < 9) {
+            setShowMore(false);
+        }
+        setListings([...listings, ...data]);
     }
 
 
@@ -213,6 +237,12 @@ export default function () {
                     ))
                 }
             </div>
+            {showMore && (
+                <button onClick={onShowMoreClick} className='text-green-700 hover:underline p-7 '>
+                    Show more
+                </button>
+            )}
+
         </div>
     </div>
   )
