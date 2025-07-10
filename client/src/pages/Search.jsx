@@ -67,7 +67,7 @@ export default function () {
             }else{
                 setShowMore(false);
             }
-            setListings(data);
+            setListings(data.listings);
             setLoading(false);
         }
         fetchListings();
